@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sensors01</string>
+    <string name="light_sensor_off">Light\nOFF</string>
+    <string name="light_sensor_on">Light\nON</string>
+    <string name="acc_sensor_on">Accelerometer\nON</string>
+    <string name="acc_sensor_off">Accelerometer\nOFF</string>
+</resources>
