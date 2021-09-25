@@ -3,26 +3,22 @@ package dte.masteriot.mdp.sensors01;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    Switch bLight;
-    Switch bAcc;
-    TextView tvSensorValue;
-    TextView accSensorValue;
-    MainActivityViewModel viewModel;
+    // region Properties
+    private Switch bLight;
+    private Switch bAcc;
+    private TextView tvSensorValue;
+    private TextView accSensorValue;
+    private MainActivityViewModel viewModel;
+    //endregion
 
+    // region Lifecycle methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,23 +28,10 @@ public class MainActivity extends AppCompatActivity {
         setupLightView();
         setupObservers(viewModel);
     }
+    // endregion
 
-    public void onLightSensorChanged(float[] values) {
-        if (viewModel.isSensorOn(Sensor.TYPE_LIGHT)) {
-            tvSensorValue.setText(Float.toString(values[0]));
-        }
-    }
-
-    public void onAccelerometerSensorChanged(float[] values) {
-        if (viewModel.isSensorOn(Sensor.TYPE_ACCELEROMETER)) {
-            accSensorValue.setText(
-                    "X: " + values[0]
-                            + "\nY: " + values[1]
-                            + "\nZ: " + values[2]
-            );
-        }
-    }
-
+    // region Private methods
+    // region Setup methods
     private void setupObservers(MainActivityViewModel viewModel) {
         if (!viewModel.getAccelerometerValues().hasObservers()) {
             viewModel.getAccelerometerValues().observe(this, values -> {
@@ -118,4 +101,24 @@ public class MainActivity extends AppCompatActivity {
             accSensorValue.setText("Accelerometer sensor is OFF");
         }
     }
+    // endregion
+
+    // region onChanged methods
+    private void onLightSensorChanged(float[] values) {
+        if (viewModel.isSensorOn(Sensor.TYPE_LIGHT)) {
+            tvSensorValue.setText(Float.toString(values[0]));
+        }
+    }
+
+    private void onAccelerometerSensorChanged(float[] values) {
+        if (viewModel.isSensorOn(Sensor.TYPE_ACCELEROMETER)) {
+            accSensorValue.setText(
+                    "X: " + values[0]
+                            + "\nY: " + values[1]
+                            + "\nZ: " + values[2]
+            );
+        }
+    }
+    // endregion
+    // endregion
 }

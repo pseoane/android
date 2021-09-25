@@ -3,29 +3,27 @@ package dte.masteriot.mdp.sensors01;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import dte.masteriot.mdp.sensors01.utils.SensorNotAvailableException;
 
 public class MainActivityViewModel extends AndroidViewModel {
+    // region Properties
     private MutableLiveData accelerometerValues;
     private MutableLiveData lightSensorValues;
     private SharedPreferences preferences;
     private CustomSensorListener listener;
     private Observer<SensorEvent> sensorEventsObserver;
     private String preferencesFile = "preferencesFile";
+    // endregion
 
+    // region Constructor
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
         listener = new CustomSensorListener(application);
@@ -34,13 +32,9 @@ public class MainActivityViewModel extends AndroidViewModel {
         preferences = application.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE);
         initWithPreferences(preferences);
     }
+    // endregion
 
-    @Override
-    protected void onCleared() {
-        listener.getEvents().removeObserver(sensorEventsObserver);
-        super.onCleared();
-    }
-
+    // region Public methods
     public boolean isSensorOn(int sensorType) {
         return preferences.getBoolean(preferencesFileName(sensorType), false);
     }
@@ -57,19 +51,6 @@ public class MainActivityViewModel extends AndroidViewModel {
             lightSensorValues = new MutableLiveData<float[]>();
         }
         return lightSensorValues;
-    }
-
-    private void sensorChanged(SensorEvent event) {
-        switch (event.sensor.getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
-                accelerometerValues.postValue(event.values);
-                break;
-            case Sensor.TYPE_LIGHT:
-                lightSensorValues.postValue(event.values);
-                break;
-            default:
-                return;
-        }
     }
 
     public void turnSensorOn(int sensorType) {
@@ -93,8 +74,30 @@ public class MainActivityViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
     }
+    //endregion
+
+    // region Override methods
+    @Override
+    protected void onCleared() {
+        listener.getEvents().removeObserver(sensorEventsObserver);
+        super.onCleared();
+    }
+    // endregion
 
     // region PRIVATE
+    private void sensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                accelerometerValues.postValue(event.values);
+                break;
+            case Sensor.TYPE_LIGHT:
+                lightSensorValues.postValue(event.values);
+                break;
+            default:
+                return;
+        }
+    }
+
     private void initWithPreferences(SharedPreferences preferences) {
         String lightPreferences = preferencesFileName(Sensor.TYPE_LIGHT);
         String accPreferences = preferencesFileName(Sensor.TYPE_ACCELEROMETER);
@@ -110,8 +113,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     private String preferencesFileName(int sensorType) {
-        return "sensor_preferences_" + String.valueOf(sensorType);
+        return "sensor_preferences_" + sensorType;
     }
-
     // endregion
 }

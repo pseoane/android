@@ -1,4 +1,5 @@
 package dte.masteriot.mdp.sensors01;
+import dte.masteriot.mdp.sensors01.utils.SensorNotAvailableException;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,16 +10,19 @@ import android.hardware.SensorManager;
 
 import androidx.lifecycle.MutableLiveData;
 
-import dte.masteriot.mdp.sensors01.utils.SensorNotAvailableException;
-
 public class CustomSensorListener implements SensorEventListener {
+    // region Properties
     private MutableLiveData events;
     private SensorManager sensorManager;
+    // endregion
 
+    // region Constructor
     CustomSensorListener(Application application) {
         sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
     }
+    // endregion
 
+    // region Public methods
     public MutableLiveData<SensorEvent> getEvents() {
         if (events == null) {
             events = new MutableLiveData<SensorEvent>();
@@ -44,6 +48,7 @@ public class CustomSensorListener implements SensorEventListener {
         }
     }
 
+    // region Override methods
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         events.postValue(sensorEvent);
@@ -53,4 +58,6 @@ public class CustomSensorListener implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int i) {
         // Unimplemented
     }
+    // endregion
+    // endregion
 }
