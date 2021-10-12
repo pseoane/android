@@ -1,6 +1,6 @@
 package com.example.cameramaps.client.model;
 
 public class Garden {
-    String title;
-    Coordinates location;
+    public String title;
+    public Coordinates location;
 }
