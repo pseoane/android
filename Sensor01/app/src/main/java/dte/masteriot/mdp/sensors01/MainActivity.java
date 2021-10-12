@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
     private void onAccelerometerSensorChanged(float[] values) {
         if (viewModel.isSensorOn(Sensor.TYPE_ACCELEROMETER)) {
             accSensorValue.setText(
-                    "X: " + values[0]
-                            + "\nY: " + values[1]
-                            + "\nZ: " + values[2]
+                    "X: " + String.format("%.2f", values[0])
+                            + "\nY: " + String.format("%.2f", values[1])
+                            + "\nZ: " + String.format("%.2f", values[2])
             );
         }
     }
