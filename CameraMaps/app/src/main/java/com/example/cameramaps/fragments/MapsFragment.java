@@ -1,4 +1,4 @@
-package com.example.cameramaps;
+package com.example.cameramaps.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cameramaps.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,7 +17,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MapsFragment extends Fragment {
+    private GoogleMap googleMap;
+    private int mapType = GoogleMap.MAP_TYPE_NORMAL;
+    private ArrayList<LatLng> pendingMarkers = new ArrayList();
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -30,12 +36,35 @@ public class MapsFragment extends Fragment {
          * user has installed Google Play services and returned to the app.
          */
         @Override
-        public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        public void onMapReady(GoogleMap map) {
+            googleMap = map;
+            for (LatLng marker : pendingMarkers) {
+                setMarker(marker);
+            }
+            googleMap.setMapType(mapType);
+            pendingMarkers = new ArrayList<>();
         }
     };
+
+    public void setMarker(LatLng location) {
+        if (googleMap == null) {
+            pendingMarkers.add(location);
+            return;
+        }
+        googleMap.addMarker(new MarkerOptions()
+                .position(location)
+                .title("Ubicación")
+        );
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(14.0F));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+    }
+
+    public void setType(int type) {
+        mapType = type;
+        if (googleMap != null) {
+            googleMap.setMapType(type);
+        }
+    }
 
     @Nullable
     @Override
@@ -49,7 +78,7 @@ public class MapsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.normal);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
