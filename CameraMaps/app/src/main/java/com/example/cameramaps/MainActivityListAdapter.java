@@ -12,17 +12,23 @@ import com.example.cameramaps.client.model.Garden;
 import java.util.List;
 
 public class MainActivityListAdapter extends RecyclerView.Adapter<MainActivityListViewHolder> {
-    private List<Garden> gardens;
+    public interface OnClickListener {
+        void onItemClick(int position);
+    }
 
-    public MainActivityListAdapter(List<Garden> gardens) {
+    private List<Garden> gardens;
+    private static OnClickListener clickListener;
+
+    public MainActivityListAdapter(List<Garden> gardens, OnClickListener clickListener) {
         this.gardens = gardens;
+        this.clickListener = clickListener;
     }
 
     @NonNull
     @Override
     public MainActivityListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
-        return new MainActivityListViewHolder(v);
+        return new MainActivityListViewHolder(v, clickListener);
     }
 
     @Override
