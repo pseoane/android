@@ -6,8 +6,11 @@ import androidx.fragment.app.FragmentContainerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ public class SecondActivity extends AppCompatActivity {
     private MapsFragment mapFragment;
     private TextView textView;
     private RadioGroup radioGroup;
+    private ImageButton directionsButton;
     private SharedPreferences preferences;
     private int mapType;
     private String preferencesFile = "preferencesFile";
@@ -36,6 +40,9 @@ public class SecondActivity extends AppCompatActivity {
         preferences = getSharedPreferences(preferencesFile, Context.MODE_PRIVATE);
         mapType = preferences.getInt(mapTypeKey, GoogleMap.MAP_TYPE_NORMAL);
 
+        directionsButton = findViewById(R.id.directionsButton);
+        directionsButton.setOnClickListener(view -> {openGMaps();});
+
         setupTextView();
         setupRadioGroup();
         setupMapFragment();
@@ -45,6 +52,15 @@ public class SecondActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         preferences.edit().putInt(mapTypeKey, mapType).apply();
+    }
+
+    private void openGMaps() {
+        Double lat = intent.getDoubleExtra("latitude", 0);
+        Double longit = intent.getDoubleExtra("longitude", 0);
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat + "," + longit);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 
     private void setupMapFragment() {
