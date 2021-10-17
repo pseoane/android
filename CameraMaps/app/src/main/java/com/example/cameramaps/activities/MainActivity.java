@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements
 
             for (Garden garden: gardens) {
                 float[] results = new float[1];
-                Double distance = Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, garden.location.latitude, garden.location.longitude, results);
+                Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, garden.location.latitude, garden.location.longitude, results);
+                garden.distanceToCurrentLocation = Float.toIn
             }
         }
 
